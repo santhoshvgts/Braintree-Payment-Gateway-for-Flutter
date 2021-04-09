@@ -19,6 +19,7 @@ BOOL collectDeviceData;
 BOOL nameRequired;
 BOOL threeDs2;
 BOOL disableCard;
+BOOL disablePayPal;
 FlutterResult _flutterResult;
 
 
@@ -59,6 +60,7 @@ FlutterResult _flutterResult;
         collectDeviceData = call.arguments[@"collectDeviceData"];
         threeDs2 = call.arguments[@"threeDs2"];
         disableCard = [call.arguments[@"disableCard"]boolValue] == YES;
+        disablePayPal = [call.arguments[@"disablePayPal"]boolValue] == YES;
         [self showDropIn:clientToken withResult:result];
     } else if ([@"startPayPalFlow" isEqualToString:call.method]) {
         _flutterResult = result;
@@ -98,6 +100,9 @@ FlutterResult _flutterResult;
     }
     if(disableCard){
         request.cardDisabled = disableCard;
+    }
+     if(disablePayPal){
+        request.paypalDisabled = disablePayPal;
     }
     request.threeDSecureVerification = threeDs2;
     if(threeDs2){

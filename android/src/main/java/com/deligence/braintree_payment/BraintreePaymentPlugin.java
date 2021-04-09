@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.braintreepayments.api.BraintreeFragment;
+import com.braintreepayments.api.dropin.AddCardActivity;
 import com.braintreepayments.api.dropin.DropInActivity;
 import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.DropInResult;
@@ -23,6 +24,8 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.ActivityResultListener;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
+import static com.braintreepayments.api.dropin.DropInRequest.EXTRA_CHECKOUT_REQUEST;
+
 public class BraintreePaymentPlugin implements MethodCallHandler, ActivityResultListener {
     private Activity activity;
     private Context context;
@@ -36,6 +39,7 @@ public class BraintreePaymentPlugin implements MethodCallHandler, ActivityResult
     boolean inSandbox;
     boolean useVault;
     boolean disableCard;
+    boolean disablePayPal;
     boolean enableGooglePay;
     boolean threeDs2;
     boolean collectDeviceData;
@@ -64,12 +68,23 @@ public class BraintreePaymentPlugin implements MethodCallHandler, ActivityResult
                 currency = "USD";
             this.useVault = call.argument("useVault");
             this.disableCard = call.argument("disableCard");
+            this.disablePayPal = call.argument("disablePayPal");
             this.inSandbox = call.argument("inSandbox");
             this.googleMerchantId = call.argument("googleMerchantId");
             this.enableGooglePay = call.argument("enableGooglePay");
             this.threeDs2 = call.argument("threeDs2");
             this.collectDeviceData = call.argument("collectDeviceData");
             payNow();
+        } else if (call.method.equals("startCreditCardFlow")) {
+            this.activeResult = result;
+            this.clientToken = call.argument("clientToken");
+            this.amount = call.argument("amount");
+            this.currency = call.argument("currency");
+            if (this.currency == null)
+                currency = "USD";
+            this.inSandbox = call.argument("inSandbox");
+            this.collectDeviceData = call.argument("collectDeviceData");
+            startCreditCardFlow();
         } else if (call.method.equals("startPayPalFlow")) {
             this.activeResult = result;
             this.clientToken = call.argument("clientToken");
@@ -89,6 +104,9 @@ public class BraintreePaymentPlugin implements MethodCallHandler, ActivityResult
         if (disableCard) {
             dropInRequest.disableCard();
         }
+        if (disablePayPal) {
+            dropInRequest.disablePayPal();
+        }
         if (!useVault) {
             PayPalRequest paypalRequest = new PayPalRequest(amount).currencyCode(currency);
             dropInRequest.paypalRequest(paypalRequest);
@@ -103,9 +121,22 @@ public class BraintreePaymentPlugin implements MethodCallHandler, ActivityResult
             dropInRequest.threeDSecureRequest(threeDSecureRequest);
             dropInRequest.requestThreeDSecureVerification(true);
         }
+
         activity.startActivityForResult(dropInRequest.getIntent(context), REQUEST_CODE);
     }
 
+    void startCreditCardFlow() {
+        DropInRequest dropInRequest = new DropInRequest().clientToken(clientToken);
+
+        if (collectDeviceData) {
+            dropInRequest.collectDeviceData(true);
+        }
+
+        Intent intent = new Intent(context, AddCardActivity.class)
+                .putExtra(EXTRA_CHECKOUT_REQUEST, dropInRequest);
+
+        activity.startActivityForResult(intent, REQUEST_CODE);
+    }
 
     void startPayPalFlow() {
         Intent p = new Intent(this.context, PayPalFlowActivity.class);

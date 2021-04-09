@@ -12,6 +12,7 @@ class BraintreePayment {
     bool inSandbox = true,
     bool useVault = true,
     bool disableCard = false,
+    bool disablePayPal = false,
     String currency = "USD",
     bool nameRequired = false,
     bool collectDeviceData = false,
@@ -34,6 +35,7 @@ class BraintreePayment {
           'inSandbox': inSandbox,
           'useVault': useVault,
           'disableCard': disableCard,
+          'disablePayPal': disablePayPal,
           'currency': currency,
           'nameRequired': nameRequired,
           'collectDeviceData': collectDeviceData,
@@ -48,6 +50,7 @@ class BraintreePayment {
           'disableCard': disableCard,
           'currency': currency,
           'inSandbox': inSandbox,
+          'disablePayPal': disablePayPal,
           'nameRequired': nameRequired,
           'enableGooglePay': enableGooglePay,
           'collectDeviceData': collectDeviceData,
@@ -64,8 +67,41 @@ class BraintreePayment {
         'disableCard': disableCard,
         'currency': currency,
         'threeDs2': threeDs2,
+        'disablePayPal': disablePayPal,
         'collectDeviceData': collectDeviceData,
         'nameRequired': nameRequired
+      });
+      return result;
+    }
+  }
+
+  Future startCreditCardFlow({String nonce = "",
+    String amount = "",
+    bool inSandbox = true,
+    String currency = "USD",
+    bool collectDeviceData = false}) async {
+    var result;
+    if (Platform.isAndroid) {
+      if (nonce.isEmpty) {
+        print("ERROR BRAINTREE PAYMENT : Nonce cannot be empty");
+      } else if (amount.isEmpty) {
+        print("ERROR BRAINTREE PAYMENT : Amount cannot be empty");
+      } else if (inSandbox) {
+        result = await _channel.invokeMethod<Map>('startCreditCardFlow', {
+          'clientToken': nonce,
+          'amount': amount,
+          'currency': currency,
+          'inSandbox': inSandbox,
+          'collectDeviceData': collectDeviceData,
+        });
+      }
+      return result;
+    } else {
+      result = await _channel.invokeMethod('startCreditCardFlow', {
+        'clientToken': nonce,
+        'amount': amount,
+        'currency': currency,
+        'collectDeviceData': collectDeviceData,
       });
       return result;
     }
