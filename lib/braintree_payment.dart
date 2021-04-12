@@ -114,7 +114,7 @@ class BraintreePayment {
       return result;
     } else {
       print("-----------------Inside IOS-------------------------");
-      Map result = await _channel.invokeMethod('startPayPalFlow', {
+      var result = await _channel.invokeMethod('startPayPalFlow', {
         'clientToken': nonce,
         'amount': amount,
         'currency': currency,

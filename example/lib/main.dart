@@ -52,7 +52,7 @@ class _PayState extends State<Pay> {
 
   payPalFlow() async {
     BraintreePayment braintreePayment = new BraintreePayment();
-    Map data = await braintreePayment.startPayPalFlow(
+    String data = await braintreePayment.startPayPalFlow(
         nonce: clientNonce, amount: "5.0", currency: "USD");
     print("Response of the paypal flow $data");
   }

@@ -116,10 +116,11 @@ FlutterResult _flutterResult;
     self.dataCollector = [[BTDataCollector alloc] initWithAPIClient:braintreeClient];
     self.dataCollector.delegate = self;
 
+
     BTDropInController *dropInController = [[BTDropInController alloc] initWithAuthorization:clientTokenOrTokenizationKey request:request handler:^(BTDropInController * _Nonnull controller, BTDropInResult * _Nullable result, NSError * _Nullable error) {
-    
+
        NSMutableDictionary * map = [[NSMutableDictionary alloc] init];
-    
+
         if (error != nil) {
             map[@"status"] = @"fail";
             map[@"message"] = @"Payment Nonce is Empty.";
