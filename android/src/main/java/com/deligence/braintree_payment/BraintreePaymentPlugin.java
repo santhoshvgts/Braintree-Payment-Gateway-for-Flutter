@@ -89,6 +89,11 @@ public class BraintreePaymentPlugin implements FlutterPlugin, ActivityAware, Met
         binding.addActivityResultListener(this);
     }
 
+    @Override
+    public void onDetachedFromActivity() {
+        activity = null;
+    }
+
 
     @Override
     public void onMethodCall(MethodCall call, Result result) {
