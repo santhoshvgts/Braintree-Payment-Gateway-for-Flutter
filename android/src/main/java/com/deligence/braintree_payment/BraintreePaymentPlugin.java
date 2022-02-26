@@ -17,6 +17,8 @@ import com.google.android.gms.wallet.WalletConstants;
 
 import java.util.HashMap;
 
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -26,7 +28,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 import static com.braintreepayments.api.dropin.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
-public class BraintreePaymentPlugin implements MethodCallHandler, ActivityResultListener {
+public class BraintreePaymentPlugin implements FlutterPlugin, ActivityAware, MethodCallHandler, ActivityResultListener {
     private Activity activity;
     private Context context;
     Result activeResult;
@@ -56,6 +58,36 @@ public class BraintreePaymentPlugin implements MethodCallHandler, ActivityResult
         final MethodChannel channel = new MethodChannel(registrar.messenger(), "braintree_payment");
         channel.setMethodCallHandler(new BraintreePaymentPlugin(registrar));
     }
+
+
+    @Override
+    public void onAttachedToEngine(FlutterPluginBinding binding) {
+        final MethodChannel channel = new MethodChannel(binding.getBinaryMessenger(), "braintree_payment");
+        channel.setMethodCallHandler(this);
+    }
+
+    @Override
+    public void onDetachedFromEngine(FlutterPluginBinding binding) {
+
+    }
+
+    @Override
+    public void onAttachedToActivity(ActivityPluginBinding binding) {
+        activity = binding.getActivity();
+        binding.addActivityResultListener(this);
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+        activity = null;
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(ActivityPluginBinding binding) {
+        activity = binding.getActivity();
+        binding.addActivityResultListener(this);
+    }
+
 
     @Override
     public void onMethodCall(MethodCall call, Result result) {
