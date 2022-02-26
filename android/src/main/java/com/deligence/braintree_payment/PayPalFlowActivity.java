@@ -93,6 +93,11 @@ public class PayPalFlowActivity extends AppCompatActivity implements PaymentMeth
     public void onError(Exception error) {
         String errorMessage = "Unknown error";
 
+        System.out.println("ERROR IN PLUGIN");
+
+        System.out.println(error.getMessage());
+
+
         if (error instanceof ErrorWithResponse) {
             ErrorWithResponse errorWithResponse = (ErrorWithResponse) error;
             BraintreeError cardErrors = errorWithResponse.errorFor("creditCard");
