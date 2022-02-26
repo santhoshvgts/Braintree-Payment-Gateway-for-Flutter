@@ -17,6 +17,7 @@ import com.google.android.gms.wallet.WalletConstants;
 
 import java.util.HashMap;
 
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.plugin.common.MethodCall;
