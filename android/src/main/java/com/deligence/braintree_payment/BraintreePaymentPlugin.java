@@ -63,8 +63,7 @@ public class BraintreePaymentPlugin implements FlutterPlugin, ActivityAware, Met
 
     @Override
     public void onAttachedToEngine(FlutterPluginBinding binding) {
-        final MethodChannel channel = new MethodChannel(binding.getBinaryMessenger(), "braintree_payment");
-        channel.setMethodCallHandler(this);
+
     }
 
     @Override
@@ -74,8 +73,7 @@ public class BraintreePaymentPlugin implements FlutterPlugin, ActivityAware, Met
 
     @Override
     public void onAttachedToActivity(ActivityPluginBinding binding) {
-        activity = binding.getActivity();
-        binding.addActivityResultListener(this);
+
     }
 
     @Override
@@ -85,13 +83,11 @@ public class BraintreePaymentPlugin implements FlutterPlugin, ActivityAware, Met
 
     @Override
     public void onReattachedToActivityForConfigChanges(ActivityPluginBinding binding) {
-        activity = binding.getActivity();
-        binding.addActivityResultListener(this);
+
     }
 
     @Override
     public void onDetachedFromActivity() {
-        activity = null;
     }
 
 
